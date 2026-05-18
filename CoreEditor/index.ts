@@ -23,10 +23,12 @@ import { NativeModuleTokenizer } from './src/bridge/native/tokenizer';
 import { NativeModuleAPI } from './src/bridge/native/api';
 import { NativeModuleFoundationModels } from './src/bridge/native/foundationModels';
 import { NativeModuleTranslation } from './src/bridge/native/translation';
+import { NativeModuleTab } from './src/bridge/native/tab';
 
 import { resetEditor } from './src/core';
 import { initThemeExtractors, initMarkEditModules } from './src/api/modules';
 import { setUp, applyReducedMotion } from './src/styling/config';
+import { setUpImagePreview } from './src/modules/imagePreview';
 import { loadTheme } from './src/styling/themes';
 import { startObserving } from './src/modules/events';
 
@@ -82,6 +84,7 @@ window.nativeModules = {
   api: createNativeModule<NativeModuleAPI>('api'),
   foundationModels: createNativeModule<NativeModuleFoundationModels>('foundationModels'),
   translation: createNativeModule<NativeModuleTranslation>('translation'),
+  tab: createNativeModule<NativeModuleTab>('tab'),
 };
 
 // In release mode, override window APIs to bridge to native
@@ -123,6 +126,7 @@ window.onload = () => {
 
 setUp(config, loadTheme(config.theme).colors);
 startObserving();
+setUpImagePreview();
 
 // Respond to reduced motion preference changes
 const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');

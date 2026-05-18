@@ -1291,6 +1291,9 @@
         }
       }
     },
+    "Go to Tab %d" : {
+      "comment" : "Menu item to switch to a specific tab by number, e.g. 'Go to Tab 1'"
+    },
     "Grant Access" : {
       "comment" : "Open panel prompt, used for granting access for the selected folder",
       "localizations" : {

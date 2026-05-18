@@ -428,6 +428,24 @@ extension EditorViewController: EditorModuleFoundationModelsDelegate {
   }
 }
 
+// MARK: - EditorModuleTabDelegate
+
+extension EditorViewController: EditorModuleTabDelegate {
+  func editorTabSelectTab(_ sender: EditorModuleTab, index: Int) {
+    guard let window = view.window, let tabGroup = window.tabGroup else {
+      return
+    }
+
+    let windows = tabGroup.windows
+    guard index > 0, index <= windows.count else {
+      return
+    }
+
+    tabGroup.selectedWindow = windows[index - 1]
+    windows[index - 1].makeKeyAndOrderFront(nil)
+  }
+}
+
 // MARK: - EditorFindPanelDelegate
 
 extension EditorViewController: EditorFindPanelDelegate {

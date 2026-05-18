@@ -66,6 +66,44 @@ private extension AppDelegate {
   func reconfigureMainWindowMenu(document: EditorDocument?) {
     windowFloatingItem?.isEnabled = NSApp.keyWindow is EditorWindow
     windowFloatingItem?.setOn(NSApp.keyWindow?.level == .floating)
+
+    let goToTabPrefix = "goToTab_"
+    let tabCount = NSApp.keyWindow?.tabGroup?.windows.count ?? 0
+
+    // Remove existing Go to Tab items
+    mainWindowMenu?.items
+      .filter { $0.identifier?.rawValue.hasPrefix(goToTabPrefix) == true }
+      .forEach { mainWindowMenu?.removeItem($0) }
+
+    // Find insertion point: before the first custom item (Minimize). macOS puts
+    // system-provided tab items at the top, so inserting at the first custom item
+    // places "Go to Tab" items right after the system tab items.
+    let insertIndex = mainWindowMenu?.items.firstIndex {
+      $0.action == #selector(NSWindow.performMiniaturize(_:))
+    } ?? 0
+
+    guard tabCount > 1, let menu = mainWindowMenu else { return }
+
+    // Add in reverse order so they appear as Tab 1, Tab 2, ... Tab N
+    for tabIndex in (1...min(tabCount, 6)).reversed() {
+      let item = NSMenuItem(
+        title: String(format: Localized.Window.goToTab, tabIndex),
+        action: nil,
+        keyEquivalent: "\(tabIndex)"
+      )
+      item.identifier = NSUserInterfaceItemIdentifier("\(goToTabPrefix)\(tabIndex)")
+      item.tag = tabIndex
+      item.target = NSApp.appDelegate
+      item.action = #selector(AppDelegate.goToTab(_:))
+      menu.insertItem(item, at: insertIndex)
+    }
+
+    // Add a separator between Go to Tab items and Minimize
+    if tabCount > 1 {
+      let separator = NSMenuItem.separator()
+      separator.identifier = NSUserInterfaceItemIdentifier("\(goToTabPrefix)separator")
+      menu.insertItem(separator, at: insertIndex)
+    }
   }
 
   @MainActor
@@ -126,6 +164,19 @@ private extension AppDelegate {
       lineEndingsCRItem?.setOn(lineEndings == .cr)
       lineEndingsMenu?.reloadItems()
     }
+  }
+}
+
+// MARK: - Tab Switching
+
+extension AppDelegate {
+  @objc func goToTab(_ sender: Any?) {
+    guard let index = (sender as? NSMenuItem)?.tag, index > 0 else { return }
+    guard let window = NSApp.keyWindow, let tabGroup = window.tabGroup else { return }
+    let windows = tabGroup.windows
+    guard index <= windows.count else { return }
+    tabGroup.selectedWindow = windows[index - 1]
+    windows[index - 1].makeKeyAndOrderFront(nil)
   }
 }
 

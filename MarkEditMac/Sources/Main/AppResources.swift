@@ -212,6 +212,10 @@ enum Localized {
     static let cannotBeUndone = String(localized: "This action cannot be undone.", comment: "Alert message for cannot undo")
   }
 
+  enum Window {
+    static let goToTab = String(localized: "Go to Tab %d", comment: "Menu item to switch to a specific tab by number, e.g. 'Go to Tab 1'")
+  }
+
   enum Scripting {
     static let missingCommandErrorMessage = String(localized: "Couldn’t find a command to handle incoming Apple Event.", comment: "Script error when MarkEdit has no command to handle the incoming Apple Event")
     static let missingArgumentErrorMessage = String(localized: "Argument “%@” not found in event descriptor, the descriptor is likely malformed.", comment: "Script error when a command argument is missing due to a corrupted Apple Event")

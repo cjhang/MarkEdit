@@ -45,7 +45,11 @@ const standardMatcher = new MatchDecorator({
     if (match[4]) {
       // Decorate the full match and add the url as an attribute
       if (match[5]) {
-        return add(from, to, createDeco({ 'data-link-url': match[5] }));
+        const attrs: Record<string, string> = { 'data-link-url': match[5] };
+        if (from > 0 && window.editor.state.sliceDoc(from - 1, from) === '!') {
+          attrs['data-link-is-image'] = 'true';
+        }
+        return add(from, to, createDeco(attrs));
       }
 
       // Usually speaking, this should not happen

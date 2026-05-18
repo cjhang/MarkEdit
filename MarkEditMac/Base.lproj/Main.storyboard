@@ -765,31 +765,37 @@ Gw
                                             <menu key="submenu" title="Headers" id="z5V-GU-gP0">
                                                 <items>
                                                     <menuItem title="Heading 1" keyEquivalent="1" id="kMr-G4-Kek">
+                                                        <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                                         <connections>
                                                             <action selector="toggleH1:" target="Ady-hI-5gd" id="Z8q-v8-MH0"/>
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem title="Heading 2" keyEquivalent="2" id="Rpw-oR-sIY">
+                                                        <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                                         <connections>
                                                             <action selector="toggleH2:" target="Ady-hI-5gd" id="M5N-Yd-19b"/>
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem title="Heading 3" keyEquivalent="3" id="BCM-0i-fPP">
+                                                        <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                                         <connections>
                                                             <action selector="toggleH3:" target="Ady-hI-5gd" id="Sn9-gG-8vG"/>
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem title="Heading 4" keyEquivalent="4" id="P4a-Ym-fhL">
+                                                        <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                                         <connections>
                                                             <action selector="toggleH4:" target="Ady-hI-5gd" id="YcV-YI-nI5"/>
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem title="Heading 5" keyEquivalent="5" id="toe-mI-2pC">
+                                                        <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                                         <connections>
                                                             <action selector="toggleH5:" target="Ady-hI-5gd" id="sic-6P-Hna"/>
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem title="Heading 6" keyEquivalent="6" id="gfx-t1-1ED">
+                                                        <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                                         <connections>
                                                             <action selector="toggleH6:" target="Ady-hI-5gd" id="yle-pB-4Ku"/>
                                                         </connections>
