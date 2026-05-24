@@ -32,6 +32,9 @@ final class EditorDocument: NSDocument {
     isDraft || fileURL == nil || fileData != nil
   }
 
+  /// Stable identifier for swap file tracking across the document lifetime.
+  let swapFileKey: String = EditorSwapFileManager.generateSwapFileKey()
+
   var hasBeenReverted: Bool {
     Date.now.timeIntervalSince(revertedDate) < 1
   }
@@ -78,6 +81,7 @@ final class EditorDocument: NSDocument {
   private var autosaveDelayedTask: Task<Void, Never>?
   private var textBundle: TextBundleWrapper?
   private var revertedDate: Date = .distantPast
+  private var lastPresentedItemChangeDate: Date = .distantPast
   private var suggestedTextEncoding: EditorTextEncoding?
   private weak var hostViewController: EditorViewController?
 
@@ -147,6 +151,7 @@ final class EditorDocument: NSDocument {
     Task { @MainActor in
       let saveAction = {
         super.save(sender)
+        EditorSwapFileManager.shared.removeSwapFile(key: self.swapFileKey)
         completion?()
       }
 
@@ -281,6 +286,7 @@ extension EditorDocument {
 
   override func close() {
     saveToClosedTabHistory()
+    EditorSwapFileManager.shared.removeSwapFile(key: swapFileKey)
     super.close()
 
     if let spellDocTag {
@@ -361,7 +367,7 @@ extension EditorDocument {
   //
   // Note that, by only overriding the "saveToURL" method can bring hang issues.
   override func save(_ sender: Any?) {
-    guard isOutdated || needsFormatting else {
+    guard isOutdated || needsFormatting || hasBeenReverted else {
       super.save(sender)
       markContentClean()
       return
@@ -396,6 +402,20 @@ extension EditorDocument {
 
   override func presentedItemDidChange() {
     guard let fileURL, let fileType else {
+      return
+    }
+
+    // Debounce rapid-fire calls to avoid false-positive storms
+    let now = Date.now
+    guard now.timeIntervalSince(lastPresentedItemChangeDate) > 3 else {
+      return
+    }
+
+    lastPresentedItemChangeDate = now
+
+    // Never auto-revert when the document has unsaved changes,
+    // doing so loses the user's edits and can cause a hang on subsequent "Save As".
+    guard !isDocumentEdited else {
       return
     }
 

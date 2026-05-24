@@ -118,6 +118,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // Install uncaught exception handler
     AppExceptionCatcher.install()
+
+    // Check for orphaned swap files from a previous crash
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+      self.checkForSwapFileRecovery()
+    }
   }
 
   func applicationShouldTerminate(_ application: NSApplication) -> NSApplication.TerminateReply {

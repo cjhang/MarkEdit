@@ -24,6 +24,15 @@
         }
       }
     },
+    "%lldd ago" : {
+
+    },
+    "%lldh ago" : {
+
+    },
+    "%lldm ago" : {
+
+    },
     "⌘-click to follow" : {
       "comment" : "Tooltip for links",
       "localizations" : {
@@ -823,6 +832,9 @@
           }
         }
       }
+    },
+    "Discard" : {
+
     },
     "Document" : {
       "comment" : "Statistics mode: full document",
@@ -1672,6 +1684,9 @@
         }
       }
     },
+    "just now" : {
+
+    },
     "Keep caret in the middle" : {
       "comment" : "Explanation for typewriter mode",
       "localizations" : {
@@ -1838,6 +1853,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "MarkEdit %@ 是目前的最新版本。"
+          }
+        }
+      }
+    },
+    "MarkEdit found an unsaved file from a previous session.\n\n%@ — edited %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "MarkEdit found an unsaved file from a previous session.\n\n%1$@ — edited %2$@"
           }
         }
       }
@@ -2267,6 +2292,12 @@
           }
         }
       }
+    },
+    "Recover" : {
+
+    },
+    "Recover unsaved changes?" : {
+
     },
     "Reduce Transparency:" : {
       "comment" : "Label for the option to reduce window transparency",

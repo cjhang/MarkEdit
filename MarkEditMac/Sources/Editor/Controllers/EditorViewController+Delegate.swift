@@ -217,6 +217,15 @@ extension EditorViewController: EditorModuleCoreDelegate {
     if contentEdited {
       document?.isOutdated = true
 
+      // Schedule a swap file write for crash recovery
+      if let document {
+        let swapKey = document.swapFileKey
+        let swapFileURL = document.fileURL
+        EditorSwapFileManager.shared.scheduleWrite(key: swapKey, fileURL: swapFileURL) { [weak self] in
+          try? await self?.bridge.core.getEditorText()
+        }
+      }
+
       // Window restoration is enabled, explicit autosave to prevent data loss
       if document?.fileURL == nil && AppPreferences.General.quitAlwaysKeepsWindows {
         document?.autosaveDelayed()
