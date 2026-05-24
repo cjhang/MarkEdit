@@ -833,9 +833,6 @@
         }
       }
     },
-    "Discard" : {
-
-    },
     "Document" : {
       "comment" : "Statistics mode: full document",
       "localizations" : {
@@ -1857,16 +1854,6 @@
         }
       }
     },
-    "MarkEdit found an unsaved file from a previous session.\n\n%@ — edited %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "MarkEdit found an unsaved file from a previous session.\n\n%1$@ — edited %2$@"
-          }
-        }
-      }
-    },
     "Missing active document to proceed." : {
       "localizations" : {
         "zh-Hans" : {
@@ -2292,12 +2279,6 @@
           }
         }
       }
-    },
-    "Recover" : {
-
-    },
-    "Recover unsaved changes?" : {
-
     },
     "Reduce Transparency:" : {
       "comment" : "Label for the option to reduce window transparency",

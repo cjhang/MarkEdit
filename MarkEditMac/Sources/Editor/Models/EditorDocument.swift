@@ -346,7 +346,7 @@ extension EditorDocument {
 extension EditorDocument {
   override func read(from data: Data, ofType typeName: String) throws {
     DispatchQueue.global(qos: .userInitiated).async {
-      let newValue = {
+      var newValue = {
         if let encoding = AppDocumentController.suggestedTextEncoding {
           return encoding.decode(data: data)
         }
@@ -354,6 +354,16 @@ extension EditorDocument {
         let encoding = AppPreferences.General.defaultTextEncoding
         return encoding.decode(data: data, guessEncoding: true)
       }()
+
+      // Check for a swap file with newer content from a previous crash
+      if let filePath = self.fileURL?.absoluteURL.path,
+         let fileDate = try? FileManager.default.attributesOfItem(atPath: filePath)[.modificationDate] as? Date,
+         let recovered = EditorSwapFileManager.shared.newerSwapContent(for: filePath, fileModificationDate: fileDate) {
+        newValue = recovered
+        DispatchQueue.main.async {
+          self.markContentDirty(true)
+        }
+      }
 
       DispatchQueue.main.async {
         self.fileData = data

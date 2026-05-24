@@ -113,6 +113,31 @@ final class EditorSwapFileManager {
       .sorted { $0.timestamp > $1.timestamp }
   }
 
+  /// Find a swap file whose originalPath matches the given file path.
+  /// Returns the content if the swap file timestamp is newer than `fileModificationDate`.
+  func newerSwapContent(for filePath: String, fileModificationDate: Date) -> String? {
+    guard let fileURLs = try? FileManager.default.contentsOfDirectory(
+      at: swapDirectory,
+      includingPropertiesForKeys: nil,
+      options: .skipsHiddenFiles
+    ) else {
+      return nil
+    }
+
+    for url in fileURLs {
+      guard let info = readSwapFile(at: url),
+            info.originalPath == filePath,
+            info.timestamp > fileModificationDate else {
+        continue
+      }
+      // Found a swap file with newer content — remove it since we're recovering now
+      try? FileManager.default.removeItem(at: url)
+      return info.content
+    }
+
+    return nil
+  }
+
   /// Read and parse a specific swap file for recovery.
   func recoverSwapFile(at url: URL) -> SwapFileInfo? {
     readSwapFile(at: url)
