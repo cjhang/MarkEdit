@@ -12,7 +12,7 @@ import MarkEditKit
 enum AppUpdater {
   private enum Constants {
     static let defaultOSVer = "1.0.0"
-    static let endpoint = "https://api.github.com/repos/MarkEdit-app/MarkEdit/releases/latest"
+    static let endpoint = "https://api.github.com/repos/cjhang/MarkEdit/releases/latest"
     static let decoder = {
       let decoder = JSONDecoder()
       decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -52,11 +52,13 @@ enum AppUpdater {
       return
     }
 
-    // Check if the version is different and wasn't released to MAS
+    // Check if the version is newer and wasn't released to MAS
     let currentVersion = Bundle.main.shortVersionString ?? "0.0.0"
     Logger.assert(currentVersion != "0.0.0", "Invalid current version string")
 
-    guard version.name != currentVersion && !version.releasedToMAS else {
+    // GitHub release names are prefixed with "v", e.g. "v0.2"
+    let latestVersion = version.name.hasPrefix("v") ? String(version.name.dropFirst()) : version.name
+    guard latestVersion.compare(currentVersion, options: .numeric) == .orderedDescending && !version.releasedToMAS else {
       return {
         guard explicitly else {
           return
@@ -72,7 +74,7 @@ enum AppUpdater {
     }
 
     let releaseInfo = await extractReleaseInfo(from: version)
-    Logger.log(.info, "v\(version.name) needs macOS \(releaseInfo?.minOSVer ?? Constants.defaultOSVer)")
+    Logger.log(.info, "\(version.name) needs macOS \(releaseInfo?.minOSVer ?? Constants.defaultOSVer)")
 
     DispatchQueue.main.async {
       presentUpdate(newVersion: version, releaseInfo: releaseInfo, explicitly: explicitly)
@@ -123,7 +125,7 @@ private extension AppUpdater {
     alert.addButton(withTitle: Localized.Updater.notNow)
 
     if alert.runModal() == .alertFirstButtonReturn {
-      NSWorkspace.shared.safelyOpenURL(string: "https://github.com/MarkEdit-app/MarkEdit/releases")
+      NSWorkspace.shared.safelyOpenURL(string: "https://github.com/cjhang/MarkEdit/releases")
     }
   }
 

@@ -209,10 +209,8 @@ private extension EditorSettingsView {
 
     Divider()
 
-    HStack {
-      Image(systemName: Icons.wandAndSparkles)
-      Text(Localized.Settings.getCustomThemes)
-    }.tag(Constants.customThemesTag)
+    Text(Localized.Settings.getCustomThemes)
+      .tag(Constants.customThemesTag)
   }
 
   func getCustomThemes(selection: Binding<String>, revertTo value: String) {

@@ -33,11 +33,21 @@ public struct FontPicker: View {
 
     HStack {
       ZStack {
-        // Just to steal the bezel UI from TextField
-        TextField(text: .constant("")) {}
-          .focusable(false)
-          .allowsHitTesting(false)
-          .accessibilityHidden(true)
+        if #available(macOS 27.0, *) {
+          // To avoid the background color in macOS Golden Gate,
+          // use a custom stroke to simulate the bezel UI instead.
+          let hairlineWidth = 1.0 / (NSScreen.main?.backingScaleFactor ?? 2)
+          RoundedRectangle(cornerRadius: 6)
+            .stroke(.separator, lineWidth: hairlineWidth)
+            .padding(EdgeInsets(top: -3, leading: -hairlineWidth, bottom: -3, trailing: -hairlineWidth))
+            .allowsHitTesting(false)
+        } else {
+          // Just to steal the bezel UI from TextField
+          TextField(text: .constant("")) {}
+            .focusable(false)
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
+        }
 
         Text(selectedFontName)
           .font(Font(selectedFontStyle.fontWith(size: 12)))
@@ -48,13 +58,12 @@ public struct FontPicker: View {
       .frame(width: 190, height: 19, alignment: .center)
 
       Stepper(
-        value: $selectedFontSize,
-        in: Self.minimumFontSize...Self.maximumFontSize,
-        label: {},
-        onEditingChanged: { _ in
-          changeFontSize(selectedFontSize)
-        }
-      )
+        value: Binding(
+          get: { selectedFontSize },
+          set: { changeFontSize($0) }
+        ),
+        in: Self.minimumFontSize...Self.maximumFontSize
+      ) {}
 
       ZStack(alignment: .bottomLeading) {
         IdentifiableWrapper()

@@ -108,6 +108,11 @@ final class EditorWebView: WKWebView {
       return true
     }
 
+    // Always enable "Show Writing Tools"
+    if #available(macOS 27.0, *), AppDesign.forceWritingTools {
+      AppWritingTools.ensureWritingTools(menu: menu, target: self)
+    }
+
     // Actions like select all in selection, replace all in selection, etc
     if let searchMenuItem = actionDelegate?.editorWebViewSearchActionsMenuItem(self) {
       menu.insertItem(searchMenuItem, at: 0)
@@ -144,7 +149,10 @@ final class EditorWebView: WKWebView {
       menu.addItem(item)
     }
 
-    menu.addItem(.separator())
+    if #unavailable(macOS 27.0) {
+      menu.addItem(.separator())
+    }
+
     updateMenuItems(menu: menu)
     super.willOpenMenu(menu, with: event)
 

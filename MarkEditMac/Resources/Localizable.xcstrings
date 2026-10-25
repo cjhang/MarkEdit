@@ -2653,6 +2653,9 @@
         }
       }
     },
+    "Show Writing Tools" : {
+      "comment" : "Show Writing Tools"
+    },
     "Show:" : {
       "comment" : "Label for display options",
       "localizations" : {

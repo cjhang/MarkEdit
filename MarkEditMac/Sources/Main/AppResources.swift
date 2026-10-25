@@ -110,6 +110,7 @@ enum Localized {
 
   enum WritingTools {
     static let title = String(localized: "Writing Tools", comment: "Writing Tools")
+    static let menuItemTitle = String(localized: "Show Writing Tools", comment: "Show Writing Tools")
   }
 
   enum Settings {
@@ -253,6 +254,7 @@ enum Icons {
   static let chartPie = "chart.pie"
   static let curlybracesSquare = "curlybraces.square"
   static let gearshape = "gearshape"
+  static let interfaceWindowOnRectangle = "interface.window.on.rectangle"
   static let italic = "italic"
   static let link = "link"
   static let listBullet = "list.bullet"

@@ -8,7 +8,7 @@
 import Foundation
 
 /**
- [GitHub Releases API](https://api.github.com/repos/MarkEdit-app/MarkEdit/releases/latest)
+ [GitHub Releases API](https://api.github.com/repos/cjhang/MarkEdit/releases/latest)
  */
 struct AppVersion: Decodable {
   struct Asset: Decodable {

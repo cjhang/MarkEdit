@@ -539,6 +539,12 @@ extension EditorViewController {
 private extension EditorViewController {
   final class UserDefinedMenuItem: NSMenuItem {
     var stateGetterID: String?
+
+    override var image: NSImage? {
+      didSet {
+        ensureImageVisibility()
+      }
+    }
   }
 
   var contentHeight: Double {
@@ -632,11 +638,13 @@ private extension EditorViewController {
       return .separator()
     } else if let children = spec.children {
       let item = UserDefinedMenuItem(title: spec.title ?? "")
+      item.ensureTitleVisibility()
       item.image = createMenuIcon(spec: spec)
       item.submenu = createMenu(items: children, handler: handler)
       return item
     } else if let title = spec.title {
       let item = UserDefinedMenuItem(title: title)
+      item.ensureTitleVisibility()
       if let actionID = spec.actionID {
         item.addAction { handler(actionID, nil) }
       }

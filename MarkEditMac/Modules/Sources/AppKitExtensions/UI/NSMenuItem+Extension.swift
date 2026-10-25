@@ -7,6 +7,15 @@
 import AppKit
 
 public extension NSMenuItem {
+  static var systemWritingToolsItem: Self? {
+    let selector = sel_getUid("standardWritingToolsMenuItem")
+    guard responds(to: selector) else {
+      return nil
+    }
+
+    return perform(selector)?.takeUnretainedValue() as? Self
+  }
+
   convenience init(title: String) {
     self.init(title: title, action: nil, keyEquivalent: "")
   }
@@ -46,6 +55,35 @@ public extension NSMenuItem {
     }
 
     NSApp.sendAction(action, to: target, from: self)
+  }
+
+  func ensureTitleVisibility() {
+    guard #available(macOS 27.0, *), attributedTitle == nil else {
+      return
+    }
+
+    // [macOS 27] Regression: title is truncated
+    attributedTitle = NSAttributedString(string: title)
+  }
+
+  func ensureImageVisibility() {
+    guard #available(macOS 27.0, *) else {
+      return
+    }
+
+  #if canImport(FoundationModels, _version: 2)
+    preferredImageVisibility = .visible
+  #else
+    let selector = sel_getUid("setPreferredImageVisibility:")
+    if responds(to: selector) {
+      unsafeBitCast(
+        method(for: selector),
+        to: (@convention(c) (NSMenuItem, Selector, Int) -> Void).self
+      )(self, selector, 1) // .visible
+    } else {
+      assertionFailure("Missing setPreferredImageVisibility:")
+    }
+  #endif
   }
 }
 

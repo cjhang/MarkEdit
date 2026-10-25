@@ -9,6 +9,13 @@ import AppKit
 import MarkEditKit
 
 extension AppDelegate: NSMenuDelegate {
+  @available(macOS 15.1, *)
+  var activeWritingToolsItem: NSMenuItem? {
+    mainEditMenu?.items.first {
+      $0.identifier?.rawValue == "__NSTextViewContextSubmenuIdentifierWritingTools"
+    }
+  }
+
   func menuNeedsUpdate(_ menu: NSMenu) {
     switch menu {
     case mainFileMenu:
@@ -53,6 +60,18 @@ private extension AppDelegate {
       editPasteItem?.isEnabled = NSPasteboard.general.hasText
     }
 
+    // [macOS 27] Always enable "Writing Tools"
+    if #available(macOS 27.0, *), AppDesign.forceWritingTools {
+      // Prevent duplicate items
+      editWritingToolsItem?.isHidden = !(activeWritingToolsItem?.isHidden ?? true)
+
+      // Copy properties from `standardWritingToolsMenuItem`
+      let systemItem = NSMenuItem.systemWritingToolsItem
+      editWritingToolsItem?.submenu = systemItem?.submenu?.copiedMenu
+      editWritingToolsItem?.title = systemItem?.title ?? Localized.WritingTools.title
+      editWritingToolsItem?.image = AppWritingTools.affordanceIcon
+    }
+
     editTypewriterItem?.setOn(AppPreferences.Editor.typewriterMode)
   }
 
@@ -92,6 +111,7 @@ private extension AppDelegate {
         keyEquivalent: "\(tabIndex)"
       )
       item.identifier = NSUserInterfaceItemIdentifier("\(goToTabPrefix)\(tabIndex)")
+      item.ensureTitleVisibility()
       item.tag = tabIndex
       item.target = NSApp.appDelegate
       item.action = #selector(AppDelegate.goToTab(_:))
@@ -132,6 +152,7 @@ private extension AppDelegate {
 
       let icon = NSWorkspace.shared.icon(forFile: appURL.path)
       item?.image = icon.resized(with: CGSize(width: 16, height: 16))
+      item?.ensureImageVisibility()
     }
   }
 
@@ -229,6 +250,6 @@ private extension AppDelegate {
   }
 
   @IBAction func openVersionHistory(_ sender: Any?) {
-    NSWorkspace.shared.safelyOpenURL(string: "https://github.com/MarkEdit-app/MarkEdit/releases")
+    NSWorkspace.shared.safelyOpenURL(string: "https://github.com/cjhang/MarkEdit/releases")
   }
 }
